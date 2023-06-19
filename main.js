@@ -4,6 +4,8 @@ const API_URL_FAVOURITES = 'https://api.thecatapi.com/v1/favourites'
 
 const API_URL_DELETE_FAVOURITES = (id) => `https://api.thecatapi.com/v1/favourites/${id}`
 
+const API_URL_UPLOAD = 'https://api.thecatapi.com/v1/images/upload'
+
 const spanError = document.getElementById('Error')
 
 async function loadRandomCats() {
@@ -113,6 +115,21 @@ async function deleteFavouriteCats(id) {
         console.log('Gato borrado de favoritos')
         loadFavouriteCats();
     }
+}
+
+async function uploadCatPhoto() {
+    const form = document.getElementById('uploadingForm')
+    const formData = new FormData(form);
+
+    console.log(formData.get('file'))
+
+    const res = await fetch(API_URL_UPLOAD, {
+        method: 'POST',
+        headers: {
+            'X-API-KEY': 'live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB'
+        },
+        body: formData
+    })
 }
 
 loadRandomCats()
