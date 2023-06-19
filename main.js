@@ -1,8 +1,8 @@
-const API_URL_RANDOM = 'https://api.thecatapi.com/v1/images/search?limit=2&api_key=live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB'
+const API_URL_RANDOM = 'https://api.thecatapi.com/v1/images/search?limit=2'
 
-const API_URL_FAVOURITES = 'https://api.thecatapi.com/v1/favourites?api_key=live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB'
+const API_URL_FAVOURITES = 'https://api.thecatapi.com/v1/favourites'
 
-const API_URL_DELETE_FAVOURITES = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB`
+const API_URL_DELETE_FAVOURITES = (id) => `https://api.thecatapi.com/v1/favourites/${id}`
 
 const spanError = document.getElementById('Error')
 
@@ -28,7 +28,12 @@ async function loadRandomCats() {
 }
 
 async function loadFavouriteCats() {
-    const res = await fetch(API_URL_FAVOURITES);
+    const res = await fetch(API_URL_FAVOURITES, {
+        method: 'GET',
+        headers: {
+            'X-API-KEY': 'live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB'
+        }
+    });
     const data = await res.json();
     console.log('Favourites')
     console.log(data)
@@ -43,7 +48,12 @@ async function loadFavouriteCats() {
         h2.appendChild(h2Text);
         section.appendChild(h2);
 
-        const res2 = await fetch(API_URL_FAVOURITES);
+        const res2 = await fetch(API_URL_FAVOURITES, {
+            method: 'GET',
+            headers: {
+                'X-API-KEY': 'live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB'
+            }
+        });
         const data2 = await res2.json();
         data2.forEach(cat => {
             const article = document.createElement('article');
@@ -67,10 +77,11 @@ async function saveFavouriteCats(id) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-API-KEY': 'live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB'
         },
         body: JSON.stringify({
             image_id: id
-        }),
+        })
     });
 
     const data = await res.json();
@@ -89,6 +100,9 @@ async function saveFavouriteCats(id) {
 async function deleteFavouriteCats(id) {
     const res = await fetch(API_URL_DELETE_FAVOURITES(id), {
         method: 'DELETE',
+        headers: {
+            'X-API-KEY': 'live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB'
+        }
     });
 
     const data = await res.json();
