@@ -2,6 +2,8 @@ const API_URL_RANDOM = 'https://api.thecatapi.com/v1/images/search?limit=2&api_k
 
 const API_URL_FAVOURITES = 'https://api.thecatapi.com/v1/favourites?api_key=live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB'
 
+const API_URL_DELETE_FAVOURITES = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=live_FAxVzuV4jCq3XgjV2CSbV26bkx61XrUeJN1tQfnYf1aONKT1txhB1fK7XPbksYMB`
+
 const spanError = document.getElementById('Error')
 
 async function loadRandomCats() {
@@ -34,19 +36,25 @@ async function loadFavouriteCats() {
     if (res.status !== 200) {
         spanError.innerHTML = "Hubo un error: "+ res.status + data.message;
     } else {
+        const section = document.getElementById('favouriteCats');
+        section.innerHTML = "";
+        const h2 = document.createElement('h2');
+        const h2Text = document.createTextNode('Gatos favoritos');
+        h2.appendChild(h2Text);
+        section.appendChild(h2);
+
         const res2 = await fetch(API_URL_FAVOURITES);
         const data2 = await res2.json();
         data2.forEach(cat => {
-            const section = document.getElementById('favouriteCats');
             const article = document.createElement('article');
             const img = document.createElement('img');
             const btn = document.createElement('button');
             const btnText = document.createTextNode('Borrar gato de favoritos');
 
+            img.src = cat.image.url;
+            img.width=150;
             btn.appendChild(btnText);
-            img.src = cat.image.url
-            img.width=500
-
+            btn.onclick = () => deleteFavouriteCats(cat.id);
             article.appendChild(img);
             article.appendChild(btn);
             section.appendChild(article);
@@ -73,23 +81,23 @@ async function saveFavouriteCats(id) {
     if (res.status !== 200) {
         spanError.innerHTML = "Hubo un error: "+ res.status + data.message
     } else {
-        const res2 = await fetch(API_URL_FAVOURITES);
-        const data2 = await res2.json();
-        data2.forEach(cat => {
-            const section = document.getElementById('favouriteCats');
-            const article = document.createElement('article');
-            const img = document.createElement('img');
-            const btn = document.createElement('button');
-            const btnText = document.createTextNode('Borrar gato de favoritos');
+        console.log('Gato guardado en favoritos')
+        loadFavouriteCats();
+    }
+}
 
-            btn.appendChild(btnText);
-            img.src = cat.image.url
-            img.width=500
+async function deleteFavouriteCats(id) {
+    const res = await fetch(API_URL_DELETE_FAVOURITES(id), {
+        method: 'DELETE',
+    });
 
-            article.appendChild(img);
-            article.appendChild(btn);
-            section.appendChild(article);
-        });
+    const data = await res.json();
+
+    if (res.status !== 200) {
+        spanError.innerHTML = "Hubo un error: "+ res.status + data.message
+    } else {
+        console.log('Gato borrado de favoritos')
+        loadFavouriteCats();
     }
 }
 
